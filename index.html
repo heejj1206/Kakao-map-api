@@ -46,6 +46,7 @@
     <footer id="footer"></footer>
     
     <script>
+        // 지도 띄우기
         const map_display = document.getElementById('map'),
               options = {
                         center: new kakao.maps.LatLng(37.566826, 126.9786567),
@@ -53,6 +54,9 @@
                         };
  
         const map = new kakao.maps.Map(map_display, options);
+        
+        // 마커 배열 생성
+        const markers = [];
     </script>
 </body>
 </html>
