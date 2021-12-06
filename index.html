@@ -6,24 +6,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=90b8e6fd2a9909e4b0de7508dd8dcb62&libraries=services"></script>
+
+    <style>
+        body {
+            width: 100%;
+            margin: 30px;
+        }
+
+        #content #map {
+            height: 500px;
+            width: 500px;
+            float: right;
+            margin-right: 100px;
+        }
+    </style>
+
 </head>
 <body>
     <header id="header">
-        kakao 맛집 검색
+        <h1>kakao 맛집 검색</h1>
     </header>
     <content id="content">
-        <div id="map_display" style="width: 500px; height: 500px;"></div>
+        <nav class="search-container">
+            <form id="searchForm">
+                <input type="search" id="query" placeholder="키워드를 입력해주세요" />
+                <button type="submit">검색</button>
+            </form>
+        </nav>
+    
+        <div class="list-container">
+            <ul id="list"></ul>
+        </div>
+    
+        <div class="map_container">
+            <div id="map">
+            </div>
+        </div>
     </content>
     <footer id="footer"></footer>
     
     <script>
-        const container = document.getElementById('map_display'),
+        const map_display = document.getElementById('map'),
               options = {
-                        center: new kakao.maps.LatLng(33.450701, 126.570667),
+                        center: new kakao.maps.LatLng(37.566826, 126.9786567),
                         level: 3
                         };
  
-        const map = new kakao.maps.Map(container, options);
+        const map = new kakao.maps.Map(map_display, options);
     </script>
 </body>
 </html>
