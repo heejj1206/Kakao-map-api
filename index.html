@@ -5,10 +5,25 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=90b8e6fd2a9909e4b0de7508dd8dcb62&libraries=services"></script>
 </head>
 <body>
-    <header id="header"></header>
-    <content id="content"></content>
+    <header id="header">
+        kakao 맛집 검색
+    </header>
+    <content id="content">
+        <div id="map_display" style="width: 500px; height: 500px;"></div>
+    </content>
     <footer id="footer"></footer>
+    
+    <script>
+        const container = document.getElementById('map_display'),
+              options = {
+                        center: new kakao.maps.LatLng(33.450701, 126.570667),
+                        level: 3
+                        };
+ 
+        const map = new kakao.maps.Map(container, options);
+    </script>
 </body>
 </html>
