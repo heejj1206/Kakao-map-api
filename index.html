@@ -68,7 +68,7 @@
         var ps = new kakao.maps.services.Places(); 
         // 키워드로 장소를 검색
         
-        ps.keywordSearch(query + ' 맛집', placesSearchCB);
+        ps.keywordSearch(query + ' ', placesSearchCB);
 
         // 키워드 검색 완료 시 호출되는 콜백함수
         function placesSearchCB (data, status, pagination) {
