@@ -14,7 +14,7 @@
         }
 
         #content #map {
-            height: 500px;
+            height: 700px;
             width: 500px;
             float: right;
             margin-right: 100px;
@@ -127,6 +127,97 @@
         
         // 마커 배열 생성
         const markers = [];
+
+        // 검색 결과 마커 띄우기
+        function popPlaces(place) {
+            const list = document.getElementById('placelist');
+            const menu = document.getElementById('map_container');
+            const bounds = new kakao.maps.LatLngBounds();
+            const fragment = document.createDocumentFragment();
+            listStr = '';
+
+            removeAllChildNods(list);
+
+            removeMarker();
+
+            for(let i = 0; i<place.length; i++) {
+                const item = getListItem(i, palces[i]);
+                const placePosition = new kakao.maps.LatLng(places[i].y, places[i].x);
+                const marker = addMarker(placePosition, i);
+                
+                // 지도 범위 재설정
+                bounds.extend(placePosition);
+
+                (function(marker, title) {
+                    kakao.maps.event.addListener(marker, 'mouseover', function() {
+                        displayInfowindow(marker, title);
+                    });
+
+                    kakao.maps.event.addListener(marker, 'mouseout', function() {
+                        infowindow.close();
+                    });
+
+                    item.onmouseover = function() {
+                        displayInfowindow(marker, title);
+                    };
+
+                    item.onmouseout = function() {
+                        infowindow.close();
+                    };
+                }) (marker, places[i].place_name);
+
+                fragment.appendChild(item);
+            }
+
+            list.appendChild(fragment);
+            menu.scrollTop = 0;
+
+            map.setBounds(bounds);
+        }
+        // 검색 결과 항목으로 반환
+        function getList(index, places) {
+            const el = document.createElement('li')
+            const itemStr = '<span class="markerbg marker_' + (index+1) + '"></span>'
+                            + '<div class="info">'
+                            + '<h5>' + places.place_name + '</h5>';
+            
+            if(places.road_address_name) {
+                itemStr += '<span>' + palces.road_address_name + '</span>' +
+                            '<span class="jibun gray">' + places.address_name + '</span>';
+            } else {
+                itemStr += '<span>' + places.address_name + '</span>';
+            }
+
+            itemStr += '<span class="tel">' + places.phone + '</span>' + '</div>';
+
+            el.innerHTML = itemStr;
+            el.className = 'item';
+
+            return el;
+
+            //마커를 지도에 표시
+            function addMarker(position, idx, title) {
+                const imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png';
+                const imageSize = new kakao.maps.Size(36, 37);
+                const imgOptions = {
+                    spriteSize : new kakao.maps.Size(36, 691), 
+                    spriteOrigin : new kakao.maps.Point(0, (idx*46)+10),
+                    offset: new kakao.maps.Point(13, 37)
+                };
+                const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions);
+                const marker = new kakao.maps.Marker({
+                                position: position,
+                                image: markerImage
+                            });
+
+                marker.setMap(map);
+                markers.push(marker);
+
+                return marker;
+            }
+
+            
+        }
     </script>
 </body>
 </html>
