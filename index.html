@@ -44,8 +44,79 @@
         </div>
     </content>
     <footer id="footer"></footer>
-    
+
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=90b8e6fd2a9909e4b0de7508dd8dcb62&libraries=services"></script>
     <script>
+      function get_map_search(query) {
+        const xhr = new XMLHttpRequest();
+        const method = "GET";
+        const url =
+          "https://dapi.kakao.com/v2/local/search/keyword.json?query=" + query;
+
+        xhr.onreadystatechange = (e) => {
+          const { target } = e;
+
+          if (target.readyState == XMLHttpRequest.DONE) {
+            if (target.status == 200) {
+              const req = JSON.parse(target.response);
+              const listBody = document.querySelector("#list");
+              listBody.innerHTML = "";
+              req.documents.map((v, i) => {
+                console.log(v);
+
+               
+              });
+            } else {
+              const s = parseInt(target.status / 100);
+              let errMsg = null;
+              if (s == 4) {
+                errMsg =
+                  "[" +
+                  target.status +
+                  "]" +
+                  target.statusText +
+                  "-요청 주소가 잘못되었습니다.";
+              } else if (s == 5) {
+                errMsg =
+                  "[" +
+                  target.status +
+                  "]" +
+                  target.statusText +
+                  "-서버의 응답이 없습니다.";
+              } else {
+                errMsg =
+                  "[" +
+                  target.status +
+                  "]" +
+                  target.statusText +
+                  "-요청에 실패했습니다.";
+              }
+              alert(errMsg);
+            }
+          }
+        };
+
+        xhr.open(method, url);
+        xhr.setRequestHeader(
+          "Authorization",
+          "KakaoAK fc4ae9f65a8ff5a3a85b0ed5a6cf19cd"
+        );
+        xhr.send();
+      }
+      document.querySelector("#searchForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const queryField = document.querySelector("#query");
+        const query = queryField.value.trim();
+
+        if (!query) {
+          alert("검색하세요");
+          queryField.focus();
+          return;
+        }
+        get_map_search(query);
+      });
+    
+   
         const map_display = document.getElementById('map'),
               options = {
                         center: new kakao.maps.LatLng(37.566826, 126.9786567),
