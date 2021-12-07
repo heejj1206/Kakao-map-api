@@ -63,20 +63,21 @@
         <h1>kakao 맛집 검색</h1>
     </header>
     <content id="content">
-        <nav class="search-container">
+        <nav class="search_container">
             <form id="searchForm">
                 <input type="search" id="query" placeholder="키워드를 입력해주세요" />
                 <button type="submit">검색</button>
             </form>
         </nav>
     
-        <div class="list-container">
+        <div class="list_container">
             <ul id="list"></ul>
         </div>
     
         <div class="map_container">
             <div id="map">
             </div>
+            <button type="button" id="loc_btn">현재 위치에서 검색</button>
         </div>
     </content>
     <footer id="footer"></footer>
@@ -100,27 +101,7 @@
               req.documents.map((v, i) => {
                 console.log(v);
 
-                const li = document.createElement("li");
-                const a = document.createElement("a");
-                a.setAttribute("href", v.place_url);
 
-                const span1 = document.createElement("span");
-                span1.innerHTML = v.place_name;
-
-                const span2 = document.createElement("span");
-                span2.innerHTML = v.address_name;
-
-                const span3 = document.createElement("span");
-                span3.innerHTML = v.phone;
-
-                li.appendChild(a);
-                a.appendChild(span1);
-                a.appendChild(span2);
-                a.appendChild(span3);
-
-                listBody.appendChild(li);
-
-            // 장소 검색 객체를 생성합니다
         var ps = new kakao.maps.services.Places(); 
         // 키워드로 장소를 검색
         
@@ -145,7 +126,6 @@
         
     // 지도에 마커를 표시하는 함수입니다
     function displayMarker(place) {
-
         // 마커를 생성하고 지도에 표시합니다
         var marker = new kakao.maps.Marker({
             map: map,
@@ -198,6 +178,7 @@
         );
         xhr.send();
       }
+
       document.querySelector("#searchForm").addEventListener("submit", (e) => {
         e.preventDefault();
         const queryField = document.querySelector("#query");
@@ -239,7 +220,7 @@
             removeMarker();
 
             for(let i = 0; i<place.length; i++) {
-                const item = getListItem(i, palces[i]);
+                const item = getList(i, palces[i]);
                 const placePosition = new kakao.maps.LatLng(places[i].y, places[i].x);
                 const marker = addMarker(placePosition, i);
                 
@@ -292,38 +273,103 @@
             el.className = 'item';
 
             return el;
-
-            //마커를 지도에 표시
-            function addMarker(position, idx, title) {
-                const imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png';
-                const imageSize = new kakao.maps.Size(36, 37);
-                const imgOptions = {
-                    spriteSize : new kakao.maps.Size(36, 691), 
-                    spriteOrigin : new kakao.maps.Point(0, (idx*46)+10),
-                    offset: new kakao.maps.Point(13, 37)
-                };
-                const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions);
-                const marker = new kakao.maps.Marker({
-                                position: position,
-                                image: markerImage
-                            });
-
-                marker.setMap(map);
-                markers.push(marker);
-
-                return marker;
-            }
-
-            function removeMarker() {
-                for(let i = 0; i < markers.length; i++) {
-                    markers[i].setMap(null);
-                }
-                markers = [];
-            }
-
-            
-            
         }
+
+        //마커를 지도에 표시
+        function addMarker(position, idx, title) {
+            const imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png';
+            const imageSize = new kakao.maps.Size(36, 37);
+            const imgOptions = {
+                spriteSize : new kakao.maps.Size(36, 691), 
+                spriteOrigin : new kakao.maps.Point(0, (idx*46)+10),
+                offset: new kakao.maps.Point(13, 37)
+            };
+            const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions);
+            const marker = new kakao.maps.Marker({
+                            position: position,
+                            image: markerImage
+                        });
+
+            marker.setMap(map);
+            markers.push(marker);
+
+            return marker;
+        }
+        function removeMarker() {
+            for(let i = 0; i < markers.length; i++) {
+                markers[i].setMap(null);
+            }
+            markers = [];
+        }
+
+        // 지도에 마커와 인포윈도우를 표시
+        function displayMarkerWithMessage(locPosition, message) {
+
+            // 마커 생성
+            let marker = new kakao.maps.Marker({  
+                map: map, 
+                position: locPosition
+            }); 
+
+            let iwContent = message,
+                iwRemoveable = true;
+
+            // 인포윈도우 생성
+            let infowindow = new kakao.maps.InfoWindow({
+                content : iwContent,
+                removable : iwRemoveable
+            });
+
+            infowindow.open(map, marker);
+
+            // 지도 좌표를 접속위치로 변경
+            map.setCenter(locPosition);      
+        }   
+
+         // 지도에 마커를 표시하는 함수입니다
+      function displayMarker(place) {
+        // 마커를 생성하고 지도에 표시합니다
+        var marker = new kakao.maps.Marker({
+          map: map,
+          position: new kakao.maps.LatLng(place.y, place.x),
+        });
+
+        // 마커에 클릭이벤트를 등록합니다
+        kakao.maps.event.addListener(marker, "click", function () {
+          // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
+          infowindow.setContent(
+            '<div style="padding:5px;font-size:12px;">' +
+              place.place_name +
+              "</div>"
+          );
+          infowindow.open(map, marker);
+        });
+      }
+
+        const loc_btn = document.querySelector("#loc_btn");
+
+        loc_btn.addEventListener("click", (e) => {
+            //현재 위치 추적
+            if(navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    let lat = position.coords.latitude;
+                    let lon = position.coords.longitude;
+
+                    const locPosition = new kakao.maps.LatLng(lat, lon);
+
+                    map.setCenter(locPosition);  
+                
+                    map.setLevel(4, {animate: true});
+                });
+            } else {
+                let locPosition = new kakao.maps.LatLng(37.566826, 126.9786567);
+                const message = '현재 위치 사용 불가'
+
+                displayMarkerWithMessage(locPosition, message);
+            }
+        });
+    
+            
     </script>
 </body>
 </html>
