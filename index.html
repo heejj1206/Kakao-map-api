@@ -77,7 +77,7 @@
         <div class="map_container">
             <div id="map">
             </div>
-            <button type="button" id="loc_btn">현재 위치에서 검색</button>
+            <button type="button" id="loc_btn">현재 위치</button>
         </div>
     </content>
     <footer id="footer"></footer>
@@ -110,6 +110,7 @@
         // 키워드 검색 완료 시 호출되는 콜백함수
         function placesSearchCB (data, status, pagination) {
             if (status === kakao.maps.services.Status.OK) {
+                removeMarker();
                 var bounds = new kakao.maps.LatLngBounds();
                 
                 for (let i=0; i<data.length; i++) {
@@ -131,6 +132,10 @@
             map: map,
             position: new kakao.maps.LatLng(place.y, place.x) 
         });
+
+        
+
+        markers.push(marker);
 
         // 마커에 클릭이벤트를 등록합니다
         kakao.maps.event.addListener(marker, 'click', function() {
@@ -205,7 +210,7 @@
 
         
         // 마커 배열 생성
-        const markers = [];
+        let markers = [];
 
         // 검색 결과 마커 띄우기
         function popPlaces(place) {
@@ -277,7 +282,7 @@
 
         //마커를 지도에 표시
         function addMarker(position, idx, title) {
-            const imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png';
+            const imageSrc = './img/marker_img.png';
             const imageSize = new kakao.maps.Size(36, 37);
             const imgOptions = {
                 spriteSize : new kakao.maps.Size(36, 691), 
@@ -326,6 +331,18 @@
             map.setCenter(locPosition);      
         }   
 
+        // 주어진 바운더리 좌표 바깥의 마커를 제거
+        function removeOutsideMarkers(swLat, swLon, neLat, neLon) {
+            markers.forEach( marker => {
+                const markerLat = marker.getPosition().getLat();
+                const markerLng = marker.getPosition().getLng();
+
+                if(!(swLat <= markerLat && markerLat <= neLat && swLon <= markerLng && markerLng <= neLon)) {
+                    marker.setMap(null);
+                }
+            });
+        }
+
          // 지도에 마커를 표시하는 함수입니다
       function displayMarker(place) {
         // 마커를 생성하고 지도에 표시합니다
@@ -360,6 +377,14 @@
                     map.setCenter(locPosition);  
                 
                     map.setLevel(4, {animate: true});
+    
+                    console.log(map.getBounds().getSouthWest());
+                    
+                    removeOutsideMarkers(map.getBounds().getSouthWest().getLat(),
+                                        map.getBounds().getSouthWest().getLng(),
+                                        map.getBounds().getNorthEast().getLat(),
+                                        map.getBounds().getNorthEast().getLng());
+
                 });
             } else {
                 let locPosition = new kakao.maps.LatLng(37.566826, 126.9786567);
@@ -369,6 +394,7 @@
             }
         });
     
+
             
     </script>
 </body>

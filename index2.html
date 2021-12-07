@@ -64,6 +64,7 @@
             console.log(data);
             displayMarker(data[i]);
             bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+            
 
             const listBody = document.querySelector("#placesList");
 
@@ -78,8 +79,9 @@
             a.appendChild(span1);
             listBody.appendChild(li);
             
+            
             a.addEventListener("mouseover", e=>{
-                e.currentTarget.style.backgroundColor = 'black';
+                
             })
            
           }
