@@ -12,6 +12,12 @@
             width: 100%;
             margin: 30px;
         }
+        .clearfix {
+            float : none;
+            display: block;
+            content : '';
+            clear: both;
+        }
 
         #content #map {
             height: 700px;
@@ -19,6 +25,36 @@
             float: right;
             margin-right: 100px;
         }
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        #list li{
+            width: 300px;
+            
+            border-bottom: 1px dotted gray;
+            margin: 10px;
+        }
+       
+        #list li a {
+            text-decoration: none;
+            color: black;
+            display: block;
+        }
+        #list li span {
+            display: block;
+            font-size: 14px;
+            padding: 5px 10px;
+            text-align: center;
+            
+            height: 10px;
+        }
+        
+        .list-container {
+            width: 400px;
+        }
+        
     </style>
 
 </head>
@@ -65,7 +101,7 @@
               req.documents.map((v, i) => {
                 console.log(v);
 
-        // 장소 검색 객체를 생성합니다
+
         var ps = new kakao.maps.services.Places(); 
         // 키워드로 장소를 검색
         
@@ -304,6 +340,25 @@
             });
         }
 
+         // 지도에 마커를 표시하는 함수입니다
+      function displayMarker(place) {
+        // 마커를 생성하고 지도에 표시합니다
+        var marker = new kakao.maps.Marker({
+          map: map,
+          position: new kakao.maps.LatLng(place.y, place.x),
+        });
+
+        // 마커에 클릭이벤트를 등록합니다
+        kakao.maps.event.addListener(marker, "click", function () {
+          // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
+          infowindow.setContent(
+            '<div style="padding:5px;font-size:12px;">' +
+              place.place_name +
+              "</div>"
+          );
+          infowindow.open(map, marker);
+        });
+      }
 
         const loc_btn = document.querySelector("#loc_btn");
 
