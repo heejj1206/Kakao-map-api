@@ -12,6 +12,12 @@
             width: 100%;
             margin: 30px;
         }
+        .clearfix {
+            float : none;
+            display: block;
+            content : '';
+            clear: both;
+        }
 
         #content #map {
             height: 700px;
@@ -19,6 +25,36 @@
             float: right;
             margin-right: 100px;
         }
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        #list li{
+            width: 300px;
+            
+            border-bottom: 1px dotted gray;
+            margin: 10px;
+        }
+       
+        #list li a {
+            text-decoration: none;
+            color: black;
+            display: block;
+        }
+        #list li span {
+            display: block;
+            font-size: 14px;
+            padding: 5px 10px;
+            text-align: center;
+            
+            height: 10px;
+        }
+        
+        .list-container {
+            width: 400px;
+        }
+        
     </style>
 
 </head>
@@ -63,6 +99,26 @@
               listBody.innerHTML = "";
               req.documents.map((v, i) => {
                 console.log(v);
+
+                const li = document.createElement("li");
+                const a = document.createElement("a");
+                a.setAttribute("href", v.place_url);
+
+                const span1 = document.createElement("span");
+                span1.innerHTML = v.place_name;
+
+                const span2 = document.createElement("span");
+                span2.innerHTML = v.address_name;
+
+                const span3 = document.createElement("span");
+                span3.innerHTML = v.phone;
+
+                li.appendChild(a);
+                a.appendChild(span1);
+                a.appendChild(span2);
+                a.appendChild(span3);
+
+                listBody.appendChild(li);
 
             // 장소 검색 객체를 생성합니다
         var ps = new kakao.maps.services.Places(); 
