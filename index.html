@@ -96,6 +96,8 @@
             position: new kakao.maps.LatLng(place.y, place.x) 
         });
 
+        markers.push(marker);
+
         // 마커에 클릭이벤트를 등록합니다
         kakao.maps.event.addListener(marker, 'click', function() {
             // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
@@ -290,6 +292,19 @@
             map.setCenter(locPosition);      
         }   
 
+        // 주어진 바운더리 좌표 바깥의 마커를 제거
+        function removeOutsideMarkers(swLat, swLon, neLat, neLon) {
+            markers.forEach( marker => {
+                const markerLat = marker.getPosition().getLat();
+                const markerLng = marker.getPosition().getLng();
+
+                if(!(swLat <= markerLat && markerLat <= neLat && swLon <= markerLng && markerLng <= neLon)) {
+                    marker.setMap(null);
+                }
+            });
+        }
+
+
         const loc_btn = document.querySelector("#loc_btn");
 
         loc_btn.addEventListener("click", (e) => {
@@ -303,7 +318,15 @@
 
                     map.setCenter(locPosition);  
                 
-                    map.setLevel(4, {animate: true});
+                    map.setLevel(6, {animate: true});
+    
+                    console.log(map.getBounds().getSouthWest());
+                    
+                    removeOutsideMarkers(map.getBounds().getSouthWest().getLat(),
+                                        map.getBounds().getSouthWest().getLng(),
+                                        map.getBounds().getNorthEast().getLat(),
+                                        map.getBounds().getNorthEast().getLng());
+
                 });
             } else {
                 let locPosition = new kakao.maps.LatLng(37.566826, 126.9786567);
@@ -313,6 +336,7 @@
             }
         });
     
+
             
     </script>
 </body>
