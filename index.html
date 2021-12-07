@@ -77,7 +77,7 @@
         <div class="map_container">
             <div id="map">
             </div>
-            <button type="button" id="loc_btn">현재 위치에서 검색</button>
+            <button type="button" id="loc_btn">현재 위치</button>
         </div>
     </content>
     <footer id="footer"></footer>
@@ -110,6 +110,7 @@
         // 키워드 검색 완료 시 호출되는 콜백함수
         function placesSearchCB (data, status, pagination) {
             if (status === kakao.maps.services.Status.OK) {
+                removeMarker();
                 var bounds = new kakao.maps.LatLngBounds();
                 
                 for (let i=0; i<data.length; i++) {
@@ -131,6 +132,8 @@
             map: map,
             position: new kakao.maps.LatLng(place.y, place.x) 
         });
+
+        
 
         markers.push(marker);
 
@@ -207,7 +210,7 @@
 
         
         // 마커 배열 생성
-        const markers = [];
+        let markers = [];
 
         // 검색 결과 마커 띄우기
         function popPlaces(place) {
@@ -279,7 +282,7 @@
 
         //마커를 지도에 표시
         function addMarker(position, idx, title) {
-            const imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png';
+            const imageSrc = './img/marker_img.png';
             const imageSize = new kakao.maps.Size(36, 37);
             const imgOptions = {
                 spriteSize : new kakao.maps.Size(36, 691), 
@@ -373,7 +376,7 @@
 
                     map.setCenter(locPosition);  
                 
-                    map.setLevel(6, {animate: true});
+                    map.setLevel(4, {animate: true});
     
                     console.log(map.getBounds().getSouthWest());
                     
