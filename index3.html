@@ -40,7 +40,37 @@
 #pagination {margin:10px auto;text-align: center;}
 #pagination a {display:inline-block;margin-right:10px;}
 #pagination .on {font-weight: bold; cursor: default;color:#777;}
-.today-clothes {list-style: none;}
+
+#weather_txt {
+    font-weight: bolder;
+}
+
+.today-clothes {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    height: 20px;
+}
+.today-clothes li {
+  border-bottom: 1px solid #ccc;
+  height: 20px;
+  font-size: 14px;
+  text-align: center;
+  padding: 10px 0 10px 0;
+}
+
+.today-clothes li:first-child, li:last-child {
+    border-bottom: none;
+}
+
+.today-clothes li span {
+    display: block;
+}
+.today-clothes li span img {
+    width:20px;
+    height: 20px;
+    margin-right: 10px;
+}
 </style>
 </head>
 <body>
@@ -62,10 +92,12 @@
         <div id="pagination"></div>
     </div>
 </div>
-<div style="border: 2px solid black; width: 250px; height: 250px; padding: 10px; text-align: center;">
-    <div id="weather_txt"></div>
-    <img id="weather_img" style="width: 100px;"/>
-    <ul class="today-clothes"></ul></div>
+<div id="weather_wrap">
+    <div id="weather_clothes" style="opacity: 0; border: 2px solid #ccc; width: 240px; border-radius: 10px; height: 350px; margin: 20px 0 0 5px; padding: 10px; text-align: center;">
+        <div id="weather_txt"></div>
+        <img id="weather_img" style="width: 100px;"/>
+        <ul class="today-clothes"></ul></div>
+    </div>
 </div>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=90b8e6fd2a9909e4b0de7508dd8dcb62&libraries=services"></script>
 <script>
@@ -411,10 +443,10 @@ function setWeather(coords) {
         if (err != null) {
             alert('에러입니다.')
         } else {
-            console.log('현재온도는' + data.main.temp);
-            console.log('날씨는' + data.weather[0].main);
-            console.log('이미지' + data.weather[0].icon);
-    
+            const weatherClothes = document.querySelector("#weather_clothes");
+            weatherClothes.style.opacity = "1"; 
+
+
             const weatherTxt = document.querySelector("#weather_txt");
             weatherTxt.innerHTML = '현재 온도: ' + data.main.temp + '도, ' + data.weather[0].main;
             
@@ -440,70 +472,70 @@ function todayClothes(data) {
 
     if(winter) {
         clothes.innerHTML = `
-        <li><h1>지금 날씨에는..</h1></li>
-        <li><h2>패딩</h2></li>
-        <li><h2>두꺼운 코트</h2></li>
-        <li><h2>목도리</h2></li>
-        <li><h2>기모의류</h2></li>
+        <li><h3>지금 날씨에는</h3></li>
+        <li>패딩</li>
+        <li>두꺼운 코트</li>
+        <li>목도리</li>
+        <li>기모의류</li>
         `;
     } else if(earlyWinter) {
         clothes.innerHTML = `
-        <li><h1>지금 날씨에는..</h1></li>
-        <li><h2>코트</h2></li>
-        <li><h2>가죽자켓</h2></li>
-        <li><h2>발열내의</h2></li>
-        <li><h2>니트</h2></li>
-        <li><h2>레깅스</h2></li>
+        <li><h3>지금 날씨에는</h3></li>
+        <li><span><img src="img/jacket.png">코트</span></li>
+        <li><span><img src="img/coat.png">가죽자켓</span></li>
+        <li><span><img src="img/longcoat.png">발열내의</span></li>
+        <li><span><img src="img/neat.png">니트</span></li>
+        <li><span><img src="img/pants.png">레깅스</span></li>
         `;
     } else if(beginWinter) {
         clothes.innerHTML = `
-        <li><h1>지금 날씨에는..</h1></li>
-        <li><h2>자켓</h2></li>
-        <li><h2>트렌치코트</h2></li>
-        <li><h2>야상</h2></li>
-        <li><h2>니트</h2></li>
-        <li><h2>청바지</h2></li>
+        <li><h3>지금 날씨에는..</h3></li>
+        <li><span><img src="img/jacket.png">자켓</span></li>
+        <li><span><img src="img/coat.png">트렌치코트</span></li>
+        <li><span><img src="img/longcoat.png">야상</span></li>
+        <li><span><img src="img/neat.png">니트</span></li>
+        <li><span><img src="img/pants.png">청바지</span></li>
         `;
     } else if(fall) {
         clothes.innerHTML = `
-        <li><h1>지금 날씨에는..</h1></li>
-        <li><h2>얇은 니트</h2></li>
-        <li><h2>맨투맨</h2></li>
-        <li><h2>가디건</h2></li>
-        <li><h2>청바지</h2></li>
+        <li><h3>지금 날씨에는..</h3></li>
+        <li>얇은 니트</li>
+        <li>맨투맨</li>
+        <li>가디건</li>
+        <li>청바지</li>
         `;
     } else if(earlyFall) {
         clothes.innerHTML = `
-        <li><h1>지금 날씨에는..</h1></li>
-        <li><h2>얇은 가디건</h2></li>
-        <li><h2>긴팔</h2></li>
-        <li><h2>면바지</h2></li>
-        <li><h2>청바지</h2></li>
+        <li><h3>지금 날씨에는..</h3></li>
+        <li>얇은 가디건</li>
+        <li>긴팔</li>
+        <li>면바지</li>
+        <li>청바지</li>
         `;
     } else if(earlySummer) {
         clothes.innerHTML = `
-        <li><h1>지금 날씨에는..</h1></li>
-        <li><h2>얇은 가디건</h2></li>
-        <li><h2>얇은 셔츠</h2></li>
-        <li><h2>반바지</h2></li>
-        <li><h2>면바지</h2></li>
+        <li><h3>지금 날씨에는..</h3></li>
+        <li>얇은 가디건</li>
+        <li>얇은 셔츠</li>
+        <li>반바지</li>
+        <li>면바지</li>
         `;
     } else if(beginSummer) {
         clothes.innerHTML = `
-        <li><h1>지금 날씨에는..</h1></li>
-        <li><h2>반팔</h2></li>
-        <li><h2>얇은 셔츠</h2></li>
-        <li><h2>반바지</h2></li>
-        <li><h2>면바지</h2></li>
+        <li><h3>지금 날씨에는..</h3></li>
+        <li>반팔</li>
+        <li>얇은 셔츠</li>
+        <li>반바지</li>
+        <li>면바지</li>
         `;
     } else if(summer) {
         clothes.innerHTML = `
-        <li><h1>지금 날씨에는..</h1></li>
-        <li><h2>민소매</h2></li>
-        <li><h2>반팔</h2></li>
-        <li><h2>반바지</h2></li>
-        <li><h2>면바지</h2></li>
-        <li><h2>원피스</h2></li>
+        <li><h3>지금 날씨에는..</h3></li>
+        <li>민소매</li>
+        <li>반팔</li>
+        <li>반바지</li>
+        <li>면바지</li>
+        <li>원피스</li>
         `;
     }
 }
