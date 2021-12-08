@@ -363,10 +363,19 @@ loc_btn.addEventListener("click", (e) => {
             }
             // 장소검색 객체를 통해 키워드로 장소검색을 요청합니다
             console.log(myLocation);
-            ps.keywordSearch(myLocation + ' 맛집', placesSearchCB); 
+            ps.keywordSearch(myLocation + ' 데이트코스', placesSearchCB); 
         } 
-    
-
+        
+        let weatherAPI = "http://api.openweathermap.org/data/2.5/weather?lat="+lat+"&lon="+lon+"&appid=ee9f78569dc69b9f6ed6ddc0fb389220"
+        $.ajax({
+            url: weatherAPI,
+            dataType: "json",
+            type: "GET",
+            async: "false",
+            success: function(resp) {
+                console.log(resp.main.temp- 273.15)
+            }
+        })
 });
 
 </script>
