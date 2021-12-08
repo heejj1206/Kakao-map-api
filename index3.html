@@ -67,9 +67,19 @@
     display: block;
 }
 .today-clothes li span img {
-    width:20px;
+    width: 20px;
     height: 20px;
     margin-right: 10px;
+}
+body {
+    position: relative;
+}
+#weather_wrap {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    z-index: 10;
+    background-color: rgba(255, 255, 255, 0.7);
 }
 </style>
 </head>
@@ -473,10 +483,10 @@ function todayClothes(data) {
     if(winter) {
         clothes.innerHTML = `
         <li><h3>지금 날씨에는</h3></li>
-        <li>패딩</li>
-        <li>두꺼운 코트</li>
-        <li>목도리</li>
-        <li>기모의류</li>
+        <li><span><img src="img/padding.png">패딩</span></li>
+        <li><span><img src="img/longcoat.png">두꺼운 코트</span></li>
+        <li><span><img src="img/neck.png">목도리</span></li>
+        <li><span><img src="img/kimo.png">기모의류</span></li>
         `;
     } else if(earlyWinter) {
         clothes.innerHTML = `
