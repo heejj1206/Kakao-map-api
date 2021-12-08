@@ -368,16 +368,7 @@ loc_btn.addEventListener("click", (e) => {
             }
             // 장소검색 객체를 통해 키워드로 장소검색을 요청합니다
             ps.keywordSearch(myLocation + ' 데이트 코스', placesSearchCB);
-            getJSON(`http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=ee9f78569dc69b9f6ed6ddc0fb389220&units=metric`, function(err,data) {
-            // null 값이 아니면 err
-            if (err !== null) {
-                alert('에러입니다.')
-            } else {
-                console.log('현재온도는' + data.main.temp);
-            }
-});
-        } 
-        
+        }
 });
 
 // https://stackoverflow.com/questions/12460378/how-to-get-json-from-rul-in-javascript
@@ -400,7 +391,7 @@ const getJSON = function(url, callback) {
 function setWeather(coords) {
     getJSON("http://api.openweathermap.org/data/2.5/weather?lat="+coords.getLat()+"&lon="+coords.getLng()+"&appid=ee9f78569dc69b9f6ed6ddc0fb389220&units=metric", function(err,data) {
         // null 값이 아니면 err
-        if (err !== null) {
+        if (err != null) {
             alert('에러입니다.')
         } else {
             console.log('현재온도는' + data.main.temp);
@@ -415,15 +406,6 @@ function setWeather(coords) {
         }
     })
 }
-
-getJSON('http://api.openweathermap.org/data/2.5/weather?lat=37.4056318&lon=127.1151263&appid=ee9f78569dc69b9f6ed6ddc0fb389220&units=metric', function(err,data) {
-    // null 값이 아니면 err
-    if (err !== null) {
-        alert('에러입니다.')
-    } else {
-        console.log('현재온도는' + data.main.temp);
-    }
-});
 
 function todayClothes(data) {
     let clothes = document.querySelector('.today-clothes');
