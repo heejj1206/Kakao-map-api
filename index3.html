@@ -79,6 +79,7 @@ body {
     right: 10px;
     top: 10px;
     z-index: 10;
+    opacity: 0;
     background-color: rgba(255, 255, 255, 0.7);
 }
 </style>
@@ -103,7 +104,7 @@ body {
     </div>
 </div>
 <div id="weather_wrap">
-    <div id="weather_clothes" style="opacity: 0; border: 2px solid #ccc; width: 240px; border-radius: 10px; height: 350px; margin: 20px 0 0 5px; padding: 10px; text-align: center;">
+    <div id="weather_clothes" style="border: 2px solid #ccc; width: 240px; border-radius: 10px; height: 350px; margin: 20px 0 0 5px; padding: 10px; text-align: center;">
         <div id="weather_txt"></div>
         <img id="weather_img" style="width: 100px;"/>
         <ul class="today-clothes"></ul></div>
@@ -453,8 +454,8 @@ function setWeather(coords) {
         if (err != null) {
             alert('에러입니다.')
         } else {
-            const weatherClothes = document.querySelector("#weather_clothes");
-            weatherClothes.style.opacity = "1"; 
+            const weatherWrap = document.querySelector("#weather_wrap");
+            weather_wrap.style.opacity = "1"; 
 
 
             const weatherTxt = document.querySelector("#weather_txt");
