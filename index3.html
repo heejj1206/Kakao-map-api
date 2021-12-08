@@ -61,7 +61,11 @@
         <div id="pagination"></div>
     </div>
 </div>
-
+<div style="border: 2px solid black; width: 250px; height: 250px; padding: 10px; text-align: center;">
+    <div id="weather_txt"></div>
+    <img id="weather_img" style="width: 100px;"/>
+    <ul id="clothes"></div>
+</div>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=90b8e6fd2a9909e4b0de7508dd8dcb62&libraries=services"></script>
 <script>
 // 마커를 담을 배열입니다
@@ -98,9 +102,10 @@ document.querySelector("#searchForm").addEventListener("submit", (e) => {
           queryField.focus();
           return;
         }
-        ps.keywordSearch(query, placesSearchCB);
+        ps.keywordSearch(query + ' 데이트 코스', placesSearchCB);
         queryField.value = '';
         queryField.focus();
+        setWeather(map.getCenter());
       });
 
 // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
@@ -323,9 +328,9 @@ loc_btn.addEventListener("click", (e) => {
     // 주소-좌표 변환 객체를 생성합니다
     var geocoder = new kakao.maps.services.Geocoder();
     
-    let lat = null;
-    let lon = null;
-    let myLocation = "";
+    let lat = null;         // 현재 latitude
+    let lon = null;         // 현재 longitude
+    let myLocation = "";    // 문자로 된 현재 위치
     
     if (navigator.geolocation) { // GPS를 지원하면
         navigator.geolocation.getCurrentPosition(function(position) {
@@ -334,12 +339,13 @@ loc_btn.addEventListener("click", (e) => {
             console.log(position.coords.longitude);
             lon = position.coords.longitude;
             map.setCenter(new kakao.maps.LatLng(lat, lon));
-        })};
+        });
+    }
         
         // 현재 지도 중심좌표로 주소를 검색해서 지도 좌측 상단에 표시합니다
-        console.log(map.getCenter());
         
         searchAddrFromCoords(map.getCenter(), displayCenterInfo);
+        setWeather(map.getCenter());
         
         function searchAddrFromCoords(coords, callback) {
             // 좌표로 행정동 주소 정보를 요청합니다
@@ -349,34 +355,58 @@ loc_btn.addEventListener("click", (e) => {
         // 지도 좌측상단에 지도 중심좌표에 대한 주소정보를 표출하는 함수입니다
         function displayCenterInfo(result, status) {
             if (status === kakao.maps.services.Status.OK) {
-                // var infoDiv = document.getElementById('centerAddr');
-                
                 for(var i = 0; i < result.length; i++) {
                     // 행정동의 region_type 값은 'H' 이므로
                     if (result[i].region_type === 'H') {
                         // infoDiv.innerHTML = result[i].address_name;
                         console.log(result[i].address_name);
                         myLocation = result[i].address_name;
+                        console.log(myLocation);
                         break;
                     }
                 }
             }
             // 장소검색 객체를 통해 키워드로 장소검색을 요청합니다
-            console.log(myLocation);
-            ps.keywordSearch(myLocation + ' 데이트코스', placesSearchCB); 
+            ps.keywordSearch(myLocation + ' 데이트 코스', placesSearchCB); 
         } 
         
-        let weatherAPI = "http://api.openweathermap.org/data/2.5/weather?lat="+lat+"&lon="+lon+"&appid=ee9f78569dc69b9f6ed6ddc0fb389220"
-        $.ajax({
-            url: weatherAPI,
-            dataType: "json",
-            type: "GET",
-            async: "false",
-            success: function(resp) {
-                console.log(resp.main.temp- 273.15)
-            }
-        })
 });
+
+const getJSON = function(url, callback) {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.responseType = 'json';
+    xhr.onload = function() {
+        // 접속이 성공적이면 null값반환, 그외는 status 값 반환
+        const status = xhr.status;
+        if (status === 200) {
+            callback(null, xhr.response);
+        } else {
+            callback(status, xhr.response);
+        }
+    };
+    xhr.send();
+}
+
+function setWeather(coords) {
+    getJSON("http://api.openweathermap.org/data/2.5/weather?lat="+coords.getLat()+"&lon="+coords.getLng()+"&appid=ee9f78569dc69b9f6ed6ddc0fb389220&units=metric", function(err,data) {
+        // null 값이 아니면 err
+        if (err !== null) {
+            alert('에러입니다.')
+        } else {
+            console.log('현재온도는' + data.main.temp);
+            console.log('날씨는' + data.weather[0].main);
+            console.log('이미지' + data.weather[0].icon);
+    
+            const weatherTxt = document.querySelector("#weather_txt");
+            weatherTxt.innerHTML = '현재 온도: ' + data.main.temp + '도, ' + data.weather[0].main;
+            
+            const weatherImg = document.querySelector("#weather_img");
+            weatherImg.src = "http://openweathermap.org/img/w/" + data.weather[0].icon + ".png";
+        }
+    })
+}
+
 
 </script>
 </body>
